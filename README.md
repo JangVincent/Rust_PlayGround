@@ -692,3 +692,109 @@ fn no_dangle() -> String {
 - 참조는 항상 유효해야함.
 
 ## Slice Type
+
+슬라이스 타입 또한 참조(Reference) 의 일종으로, 오너쉽(소유권) 을 가지지 않음.
+
+우리는 문자열의 첫 단어(공백 포함인 경우) 를 반환하는 함수를 만들고 싶음.  
+만약 space가 없다면 하나의 단어이기 때문에 문자열 전체가 리턴되어야함.
+
+그렇다면, 공백이 발생한 곳의 인덱스를 리턴하게 해주면 되지 않을까?
+
+```rust
+fn main() {
+    let mut s = String::from("hello world");
+
+    let word = first_word(&s); // word 는 5라는 값을 가짐
+
+    s.clear(); // string을 "" 빈문자열로 만듬
+
+    // word는 5라는 값을 가지지만, 문자열은 사라졌기 때문에 사용불가능
+}
+fn first_word(s: &String) -> usize {
+    let bytes = s.as_bytes(); // 문자열을 바이트 배열로
+
+    // iter는 반복자 반환해 줌. 컬렉션의 원소를 순차적으로 리턴함
+    // enumerate 는 iter의 결과를 래핑하여 튜플로 반환함.
+    // 따라서 i는 index, &item은 해당 요소의 참조
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return i;
+        }
+    }
+
+    s.len()
+}
+```
+
+위 코드의 주석을 차례대로 읽었다면 문제가 발생했음을 알 수 있다.
+정상적으로 컴파일되지만, 원하는대로 동작하지 않을 것이다.
+
+이럴때 스트링 슬라이스를 사용한다.
+
+### String slice
+
+문자열 슬라이스는 String의 각 부분에 대한 참조임.
+
+```rust
+let s = String::from("hello world");
+
+let hello = &s[0..5];
+let world = &s[6..11];
+```
+
+![String slice](./readme/String-slice.png)
+
+이 기능은 언제나 유효한 UTF-8 문자 경계에서 발생되어야 함.  
+멀티바이트 문자 중간에 슬라이스 하려고 하면 오류남.  
+이 섹션에서는 아스키만 가정함.  
+UTF-8 에 대한 처리는 다음 [링크](https://doc.rust-lang.org/book/ch08-02-strings.html#storing-utf-8-encoded-text-with-strings) 를 참고.
+
+따라서 위의 `first_word` 함수는 다음처럼 구현 할 수 있음.
+
+```rust
+fn first_word(s: &String) -> &str {
+    let bytes = s.as_bytes();
+
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &s[0..i];
+        }
+    }
+
+    &s[..]
+}
+```
+
+하지만 아래의 코드는 컴파일 에러가 생김
+
+```rust
+fn main() {
+    let mut s = String::from("hello world");
+
+    let word = first_word(&s);
+
+    s.clear(); // error!
+
+    println!("the first word is: {}", word);
+}
+```
+
+생기는 이유는 아래와 같다.
+
+```rust
+let word = first_word(&s); // 불변 참조를 빌렸음 (불변참조 생성 됨)
+s.clear(); // 가변 참조가 일어남.
+
+// 하지만 불변참조가 있을 때 가변참조를 생성/사용 할 수 없음 따라서 에러 일어남
+```
+
+### String literal
+
+이제 우리는 문자열 리터럴을 제대로 이해할 수 있음.
+
+```rust
+let s = "hello world!"
+```
+
+문자열 리터럴 s 의 유형은 &str 과 같다. 이것은 바이너리의 특정 지점을 가리키는 포인터임.  
+이것이 string literal 이 불변인 이유이기도 함.(&str 은 불변참조임)
