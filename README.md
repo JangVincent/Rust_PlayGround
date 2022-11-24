@@ -530,3 +530,165 @@ let u = x;
 이것은 꽤나 짜증나는 일이 될 것이다.(사용하는 모든 것을 가져오고 다시 반납해야함).  
 러스트의 함수는 튜플을 반환형으로 지원하기때문에 괜찮아보이지만,  
 이것은 일반적인 개념에 비해 너무나 많은 공수가 드는 작업이다.
+
+## Reference and Borrowing
+
+`Reference` 는 C언어의 포인터와 매우 비슷하다. 주소를 따라 해당 주소의 데이터에 액세스 할 수 있기 때문.
+물론 실제 데이터는 다른 변수가 소유함.
+
+다음은 소유권을 가져오지 않고 개체에 대한 참조를 매개변수로 갖고 사용하는 방법이다.
+
+```rust
+fn main() {
+    let s1 = String::from("Hello");
+    let len = get_length(&s1);
+}
+
+fn get_length(s : &String) -> usize {
+    s.len()
+}
+```
+
+먼저 우리는 함수에 레퍼런스를 전달한다는 것에 주목하면 좋을 것이다.
+엠퍼샌드(&) 는 참조를 나타낸다. (역참조는 `*`)
+따라서 위의 코드를 도식화하면 다음과 같다.
+
+![Reference1](./readme/Reference1.png)
+
+위의 코드에서 함수 호출을 살펴보자
+
+```rust
+let s1 = String::from("Hello");
+
+let len = get_length(&s1);
+```
+
+`&s1` 구문을 사용하면 값을 참조하지만 소유하지는 않는 레퍼런스를 만들 수 있음.
+따라서 (소유하지 않으므로) 스코프를 벗어나도 가리키는 값이 삭제되지 않음.
+따라서 함수에서 소유권을 가지지 않으므로 리턴할 필요도 없음.
+
+그럼 빌린것을 수정하려고 하면 어떤 일이 일어날까?
+
+```rust
+fn main() {
+    let s = String::from("hello");
+
+    change(&s);
+}
+
+fn change(some_string: &String) {
+    some_string.push_str(", world");
+}
+```
+
+이렇게 하면 오류를 뱉게 된다.
+변수가 기본적으로 불변인 것 처럼, 참조도 마찬가지이다.
+우리는 우리가 참조하는 것을 기본적으로 수정할 수 없다.
+
+### 가변 참조
+
+위의 코드를 동작하게 하려면 조금 수정해야한다.
+
+```rust
+fn main() {
+    let mut s = String::from("hello");
+
+    change(&mut s);
+}
+
+fn change(some_string: &mut String) {
+    some_string.push_str(", world");
+}
+```
+
+우리는 먼저 s 변수 생성 시와, 함수에서 파라미터 양식을 지정할 때 `mut` 예약어를 사용해 가변참조를 명시적으로 표기한다.
+
+하지만 이러한 가변참조에는 큰 제약이 하나 있다.
+
+만약 `어떤 값에 대해 가변참조가 하나 있다면, 해당 값에 대한 다른 참조는 가질 수 없다.`
+
+따라서 아래 2개의 case 는 문제를 일으킨다.
+
+_Case 1 : 가변참조(&mut) 중복 생성_
+
+```rust
+let mut s = String::from("hello");
+
+let r1 = &mut s;
+let r2 = &mut s;
+
+println!("{}, {}", r1, r2);
+```
+
+_Case 2 : 가변 참조 1개와 불변 참조 1개 이상_
+
+```rust
+let mut s = String::from("hello");
+
+let r1 = &mut s;
+let r2 = &s;
+
+println!("{}, {}", r1, r2);
+```
+
+위의 case 2번이 불가능한 이유는, 일반적으로 불변 참조의 사용자는 값이 갑자기 변경된다고 예상하지 못하기 때문.
+
+이것은 다음과 같은 상황에서 데이터 경합이 발생됨.
+
+- 두 개 이상의 포인터가 동일한 데이터에 액세스
+- 1개 이상의 포인터가 데이터에 write 를 하려고 함
+- 데이터 액세스를 동기화하는 매커니즘이 없음
+
+데이터 경합은 정의되지 않은 동작을 유발하고, 런타임시 추적이 어려울 수 있음.  
+따라서 러스트는 이것을 컴파일 타임에 진단하고 문제를 방지함.
+
+하지만 이런 불변참조의 범위도 정해져 있는데, 가변참조가 생성되기 전까지로 한정된다.  
+따라서 다음과 같은 코드는 정상적으로 동작한다.
+
+```rust
+let mut s = String::from("hello");
+
+let r1 = &s; // no problem
+let r2 = &s; // no problem
+println!("{} and {}", r1, r2);
+// r1, r2는 이 이후에 사용되지 않으므로 아래 가변참조는 허용됨.
+
+let r3 = &mut s; // no problem
+println!("{}", r3);
+```
+
+### Dangling References (매달린 참조)
+
+포인터를 사용하는 여러 언어에서 해당 메모리의 포인터를 보존하면서 일부 메모리를 해제 함으로써, 이미 제공되었을 수 있는 메모리의 위치를 참조하는 포인터인 `Dangling pointer` 를 생성하기 쉬움.
+
+러스트는 이것을 기본적으로 방지함.
+
+다음 코드에서 인위적으로 Dangling pointer를 생성해서 실행해보자.
+
+```rust
+fn main() {
+    let reference_to_nothing = dangle();
+}
+
+fn dangle() -> &String {
+    let s = String::from("hello"); // s 생성
+
+    &s // s 의 참조 리턴
+} //하지만 여기서 s의 데이터는 힙 메모리에서 해제됨. 따라서 Dangling pointer를 반환함
+```
+
+이것은 컴파일 에러를 뱉으며, 직접 스트링을 반환하는 코드로 변경하여 해결할 수 있음.
+
+```rust
+fn no_dangle() -> String {
+    let s = String::from("hello");
+    s
+}
+```
+
+따라서 참조의 규칙을 정리해보면 다음과 같다.
+
+- 주어진 시간에 하나의 가변참조 또는 여러 불변 참조를 가짐
+- 참조는 항상 유효해야함.
+
+## Slice Type
