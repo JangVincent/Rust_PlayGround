@@ -443,7 +443,7 @@ String 버전은 정수의 버전과 매우 비슷해보인다.
 따라서 우리는 비슷하게 동작할것이라고 예상할 수 있지만, 실제는 그렇지 않다.
 String 이라는 이름 아래 어떤 동작이 일어나는지 살펴보자.
 
-![String1](./readme/string1.png)
+![String1](./readme/String1.png)
 
 String은 사실 3개 부분으로 이루어진다.
 
