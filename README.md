@@ -54,6 +54,8 @@ println!("The value of x is: {x}"); //6
 
 let을 이용하면, 우리는 몇몇 가자의 값의 변환을 할 수 있지만, 섀도잉이 끝난 이후의 변수는 불변상태(immutable) 상태가 된다.
 
+<br>
+
 # Data Type in Rust
 
 러스트의 모든 값은 자료형을 가지게 된다.  
@@ -177,7 +179,9 @@ let three : [3; 5]; //[3,3,3,3,3]
 
 ```
 
-## Function in Rust
+<br>
+
+# Function in Rust
 
 ```rust
 
@@ -328,7 +332,7 @@ for i in (1..10).rev()  { //rev() is reverse()
 
 ---
 
-## Ownership
+# Ownership
 
 일반적으로 컴파일 타임에서 그 값을 알 수 있는 변수는 스택에, 아닌 변수는 힙에서 생성되서 사용 시 스택으로 넘어가는 구조를 가지고 있다.
 
@@ -340,7 +344,7 @@ for i in (1..10).rev()  { //rev() is reverse()
 
 일반적으로 한 중괄호 (스코프) 내에서 선언된 변수는 스코프가 끝나면(중괄호가 닫히면) 더 이상 유효하지 않음.
 
-### Ownership with `String` type
+## Ownership with `String` type
 
 오너십을 잘 설명해보기 위해서는 우리는 자료형 절에서 다루었던 것 보다 조금 더 복잡한 자료형이 필요하다.
 저번 자료형 절에서 배웠던 것들은 모두 사이즈를 알고 있고, 스코프에 따라 스택에 push/pop 되며, 코드의 다른 부분에서 독립적으로 같은 값을 사용해야 할 경우, 매우 빠르고 간단히 복사 할 수 있다.
@@ -378,7 +382,7 @@ println!("{}", s); // This will print `hello, world!`
 자, 여기서 무엇이 다를까? 왜 String 은 변경 가능하지만, string literal 은 변경이 불가능할까?  
 이 질문의 답은 두개의 타입이 메모리를 처라하는 방식이 다르기 때문이다.
 
-### Memory & Allocation
+## Memory & Allocation
 
 우리는 string literal 이 컴파일 타임에 상수로 존재한다는 것을 알고있다.  
 따라서 최종 실행가능 형태에서 직접적으로 하드코딩되므로, string literal 이 빠르고 효율적인 이유다.  
@@ -505,17 +509,16 @@ let u = x;
 - 문자(character)
 - 위의 4개 자료형으로만 이루어진 튜플(Tuple)
 
-### Ownership & Function
+## Ownership & Function
 
 함수에 값을 넘기는 매커니즘은 값을 변수에 할당하는 것과 비슷하게 동작한다.
 
 - 힙 영역을 사용하는 데이터를 함수에 넘기게 되면, `함수에게 소유권이 이전(위에서 본 move)` 된다.
   - 따라서 함수가 끝나면 해당 메모리가 free 됨.
-
-<br>
-
 - 스택에 저장되는 데이터를 함수에 넘기게 되면, `copy가 일어난다`.
   - 따라서 함수가 끝나도 이전 컨텍스트에서 사용가능함.
+
+<br>
 
 ### 스코프에서 값 리턴하기
 
