@@ -380,7 +380,7 @@ println!("{}", s); // This will print `hello, world!`
 ```
 
 자, 여기서 무엇이 다를까? 왜 String 은 변경 가능하지만, string literal 은 변경이 불가능할까?  
-이 질문의 답은 두개의 타입이 메모리를 처라하는 방식이 다르기 때문이다.
+이 질문의 답은 두개의 타입이 메모리를 처리하는 방식이 다르기 때문이다.
 
 ## Memory & Allocation
 
