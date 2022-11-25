@@ -14,8 +14,8 @@
 let mut x = 5;
 x = 10 //ok
 
-let y = 5
-y = 10 // unavailable
+let y = 5;
+y = 10; // unavailable
 
 ```
 
@@ -23,7 +23,7 @@ y = 10 // unavailable
 
 ```rust
 const x : u32 = 60 * 60 * 3;
-x = 2345 //unavailable
+x = 2345; //unavailable
 ```
 
 ## Shadowing
@@ -90,10 +90,10 @@ let guess: u32 = "42".parse().expect("Not a number!");
 
 ![정수 자료형](./readme/integer-types.png)
 
-정수 자료형은 명시적인 크기를 가지며, 부호가 있을 수도 없을 수도 있습니다.
+정수 자료형은 명시적인 크기를 가지며, 부호가 있을 수도 없을 수도 있다.
 
 이 때, `isize`, `usize` 타입들은 은 당신의 프로그램이 돌아가는 컴퓨터의 구조에 따라 달라질 수 있다.  
-당신이 64비트 컴퓨터를 사용 할 경우 i/u64, 32비트 컴퓨터의 경우 i/u32 의 메모리를 할당받개 된다. ㄴ
+당신이 64비트 컴퓨터를 사용 할 경우 i/u64, 32비트 컴퓨터의 경우 i/u32 의 메모리를 할당받개 된다.
 
 정수 데이터를 명시, 표기 할 때 여러 방식으로 표기할 수 있다.  
 이것을 정수 리터럴(Integer literal) 이라고 하며 다음과 같이 표기할 수 있다.  
