@@ -1,10 +1,6 @@
 # Rust PlayGround
 
----
-
-### This README.md contained Korean translated content of [official site](https://doc.rust-lang.org/book/)
-
----
+This `README.md` based on Korean translated contents of [Official book site](https://doc.rust-lang.org/book/)
 
 # Variables in Rust
 
