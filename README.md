@@ -1043,3 +1043,104 @@ fn main() {
 
 잘 보면, 구조체의 멤버변수로 레퍼런스(&) 를 사용한 것을 볼 수 있다.  
 따라서 구조체가 Dangling pointer 를 가지지 않게 하기 위함이라고 볼 수 있겠다.
+
+## 구조체 로그 찍기
+
+일반적으로 우리는 다음 코드가 작동한다고 생각한다.
+
+```rust
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!("rect1 is {}", rect1);
+}
+```
+
+하지만 위의 코드는 오류를 뿜는다. 구조체가 `Display` 를 구현하지 않았다나 뭐라나 하면서 말이다.
+
+println! 매크로는 여러 포맷팅을 기본적으로 지원하는데, 중괄호를 사용하면, std::fmt 의 `Display`라는 포맷팅을 사용한다.
+원시자료형은 기본적으로 `Display` 포맷팅을 구현하지만,  
+구조체는 그 표현방법이 너무나 많다. 콤마를 쓸까 말까, 중괄호는 표현할까 말까.. 등등 이다.
+
+따라서 이 문제를 디버깅 시에 잡아줄 수 있는데, 먼저 `{:?}` 형식지정을 사용한다.
+이 형식지정은 `Display` 포맷팅이 아닌 `Debug` 포맷팅을 사용하도록 한다.
+그리고 실행시키면 에러가 나는데, 당현히 위와 같은 이유이다. `Debug` 가 구조체에 구현되어있지(선언되어있지) 않기 때문이다.
+
+오.. 맙소사 그럼 어떻게 해야할까?
+
+간단하다 오류메세지와 같이(Display 때, :? 형식지정도 오류메세지에서 사용하라고 권장한다)
+`#[derive(Debug)]` 구문을 구조체 선언 위에 해주면 된다. 따라서 완성되는 코드는 다음과 같다.
+
+```rust
+
+#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!("rect1 is {:?}", rect1); // rect1 is Rectangle { width: 30, height: 50 }
+}
+
+
+
+```
+
+만약 당신이 :? 대신 :#? 를 사용한다면 결과값은 들여쓰기가 적용되어 다음과 같이 나타난다.
+
+```
+rect1 is Rectangle {
+    width: 30,
+    height: 50,
+}
+```
+
+우리는 다른 방법도 있는데,  
+위의 코드의 println! 을 `dbg!` 로 바꾸면 된다.
+
+```rust
+#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let scale = 2;
+    let rect1 = Rectangle {
+        width: dbg!(30 * scale),
+        height: 50,
+    };
+
+    dbg!(&rect1);
+}
+```
+
+어 근데 이상하다. width를 선언할 때도 dbg! 가 쓰이는 것을 볼 수 있다.  
+이 매크로는 expression 의 소유권을 가져오고 계산해서 (println! 매크로는 참조를 가져와 이용), 파일, 라인 번호, expression, 결과값 등을 출력한 후 대상 expression 의 결과 값과 소유권을 반환한다.
+
+> 참고로 이 매크로는 표준 콘솔 출력 스트림이 아닌, 표준 에러 스트림을 이용해 출력한다.
+
+따라서 위 코드는 다음과 같은 결과 값을 내놓는다.
+
+```
+[src/main.rs:10] 30 * scale = 60
+[src/main.rs:14] &rect1 = Rectangle {
+    width: 60,
+    height: 50,
+}
+```
