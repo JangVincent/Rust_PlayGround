@@ -79,10 +79,10 @@ let guess: u32 = "42".parse().expect("Not a number!");
 
 스칼라 자료형은 기본적으로 단일 값을 표현한다. 러스트는 4개의 원시 스칼라 자료형을 지원한다.
 
-- integer
-- float-point number
-- boolean
-- characters
+-   integer
+-   float-point number
+-   boolean
+-   characters
 
 만약 이것에 대해서 다른 프로그래밍 언어에서 본 적이 있어 익숙하다면 이것들이 어떻게 러스트에서 쓰이는지 알아보도록 하자.
 
@@ -112,8 +112,8 @@ let guess: u32 = "42".parse().expect("Not a number!");
 
 모든 숫자 자료형의 사칙연산은 C의 사칙연산과 같음
 
-- / : 몫을 반환
-- % : 나머지 반환
+-   / : 몫을 반환
+-   % : 나머지 반환
 
 ### 불리언 자료형
 
@@ -132,8 +132,8 @@ let mut t : bool = true;
 
 ## Compound Types
 
-- Tuple
-- Array
+-   Tuple
+-   Array
 
 ### Tuple
 
@@ -338,9 +338,9 @@ for i in (1..10).rev()  { //rev() is reverse()
 
 러스트의 오너십에는 크게 3가지 규칙이 있다.
 
-- 러스트에서의 모든 값은 오너를 가진다.
-- 한 번에 한 오너만 존재할 수 있다.
-- 오너가 범위(스코프)를 벗어나면 값이 drop 된다.
+-   러스트에서의 모든 값은 오너를 가진다.
+-   한 번에 한 오너만 존재할 수 있다.
+-   오너가 범위(스코프)를 벗어나면 값이 drop 된다.
 
 일반적으로 한 중괄호 (스코프) 내에서 선언된 변수는 스코프가 끝나면(중괄호가 닫히면) 더 이상 유효하지 않음.
 
@@ -391,8 +391,8 @@ println!("{}", s); // This will print `hello, world!`
 String 타입을 사용하여 컴파잍 타임에는 알 수 없는 내용을 저장할 메모리를 힙에 할당해야한다.  
 이 동작은 아래와 같은 조건을 지닌다.
 
-- 런타임에 할당자(Allocator)에게 메모리 공간이 요청되어야한다.
-- 우리는 String 사용이 끝난 후 할당자에게 사용한 메모리 공간을 돌려줄 방법이 필요하다.
+-   런타임에 할당자(Allocator)에게 메모리 공간이 요청되어야한다.
+-   우리는 String 사용이 끝난 후 할당자에게 사용한 메모리 공간을 돌려줄 방법이 필요하다.
 
 첫번째 조건은 우리가 이미 `String::from` 을 통해 수행하고 있다.
 
@@ -447,9 +447,9 @@ String 이라는 이름 아래 어떤 동작이 일어나는지 살펴보자.
 
 String은 사실 3개 부분으로 이루어진다.
 
-- 문자열 내용을 보유하는 메모리를 가리키는 포인터
-- 길이
-- 용량
+-   문자열 내용을 보유하는 메모리를 가리키는 포인터
+-   길이
+-   용량
 
 이 데이터 그룹은 스택에 저장된다. 그림의 오른쪽은 힙에 저장된 실제 데이터이다.
 
@@ -503,20 +503,20 @@ let u = x;
 
 그렇다면 어떤 자료형이 Copy 기능을 갖추고 있을까?
 
-- 모든 정수 자료형
-- 불리언
-- 소수점
-- 문자(character)
-- 위의 4개 자료형으로만 이루어진 튜플(Tuple)
+-   모든 정수 자료형
+-   불리언
+-   소수점
+-   문자(character)
+-   위의 4개 자료형으로만 이루어진 튜플(Tuple)
 
 ## Ownership & Function
 
 함수에 값을 넘기는 매커니즘은 값을 변수에 할당하는 것과 비슷하게 동작한다.
 
-- 힙 영역을 사용하는 데이터를 함수에 넘기게 되면, `함수에게 소유권이 이전(위에서 본 move)` 된다.
-  - 따라서 함수가 끝나면 해당 메모리가 free 됨.
-- 스택에 저장되는 데이터를 함수에 넘기게 되면, `copy가 일어난다`.
-  - 따라서 함수가 끝나도 이전 컨텍스트에서 사용가능함.
+-   힙 영역을 사용하는 데이터를 함수에 넘기게 되면, `함수에게 소유권이 이전(위에서 본 move)` 된다.
+    -   따라서 함수가 끝나면 해당 메모리가 free 됨.
+-   스택에 저장되는 데이터를 함수에 넘기게 되면, `copy가 일어난다`.
+    -   따라서 함수가 끝나도 이전 컨텍스트에서 사용가능함.
 
 <br>
 
@@ -635,9 +635,9 @@ println!("{}, {}", r1, r2);
 
 이것은 다음과 같은 상황에서 데이터 경합이 발생됨.
 
-- 두 개 이상의 포인터가 동일한 데이터에 액세스
-- 1개 이상의 포인터가 데이터에 write 를 하려고 함
-- 데이터 액세스를 동기화하는 매커니즘이 없음
+-   두 개 이상의 포인터가 동일한 데이터에 액세스
+-   1개 이상의 포인터가 데이터에 write 를 하려고 함
+-   데이터 액세스를 동기화하는 매커니즘이 없음
 
 데이터 경합은 정의되지 않은 동작을 유발하고, 런타임시 추적이 어려울 수 있음.  
 따라서 러스트는 이것을 컴파일 타임에 진단하고 문제를 방지함.
@@ -688,8 +688,8 @@ fn no_dangle() -> String {
 
 따라서 참조의 규칙을 정리해보면 다음과 같다.
 
-- 주어진 시간에 하나의 가변참조 또는 여러 불변 참조를 가짐
-- 참조는 항상 유효해야함.
+-   주어진 시간에 하나의 가변참조 또는 여러 불변 참조를 가짐
+-   참조는 항상 유효해야함.
 
 ## Slice Type
 
@@ -798,3 +798,248 @@ let s = "hello world!"
 
 문자열 리터럴 s 의 유형은 &str 과 같다. 이것은 바이너리의 특정 지점을 가리키는 포인터임.  
 이것이 string literal 이 불변인 이유이기도 함.(&str 은 불변참조임)
+
+<br/>
+
+## Structs (구조체)
+
+구조체는 튜플과 매우 유사하다. 위의 튜플 섹션에서 이미 봤겠지만, 둘 다 여러 데이터 타입들을 가지고 있다.  
+하지만 튜플과 다르게, 구조체는 멤버 변수들에 대해 각각 이름을 붙일 수 있다.  
+이것은 결론적으로 튜플보다 구조체가 조금 더 유연한 구조라는 뜻으로 풀이된다.  
+왜냐하면 구조체는 개발자가 인스턴스 값을 지정하거나 액세스 하기 위해 그것의 순서(인덱스) 에 의존할 필요가 없기 때문.
+
+만약에 당신의 자바스크립트나 타입스크립트에 대한 경험이 있다면 문법의 생김새 적으로 조금 더 뺼리 적응할 수 있을 것이다.
+
+<br/>
+
+구조체는 다음과 같이 정의한다.
+
+```rust
+
+struct User {
+    active : bool,
+    username : String,
+    email : String,
+    sign_in_count : usize,
+}
+
+```
+
+이렇게 정의된 구조체는 다음과 같이 사용할 수 있다.
+
+```rust
+struct User {
+    active: bool,
+    username: String,
+    email: String,
+    sign_in_count: u64,
+}
+
+fn main() {
+    let user1 = User {
+        email: String::from("someone@example.com"),
+        username: String::from("someusername123"),
+        active: true,
+        sign_in_count: 1,
+    };
+}
+
+```
+
+위의 `main()` 함수에서 볼 수 있다시피, 당신은 선언된 자료순서와 다르게 지정해도 아무 문제가 없다는 것을 알 수 있다.
+<br/>
+
+구조체에서 특정 값을 뽑아내기 위해서는 dot(.) 를 사용하면 된다.
+
+```rust
+fn main() {
+    let mut user1 = User {
+        email: String::from("someone@example.com"),
+        username: String::from("someusername123"),
+        active: true,
+        sign_in_count: 1,
+    };
+
+    user1.email = String::from("test@test.com");
+}
+
+```
+
+러스트에서 특정 필드만 가변으로 표시하는것을 허용하지 않는다.  
+따라서 생성자 같은 역할의 함수를 만들고 싶을지도 모른다.  
+함수의 반환 타입을 명시하고, 함수 본문의 마지막을 표현식으로 만들어 새 인스턴스를 만들어 넘길 수 있겠다.
+
+```rust
+
+struct User {
+    active: bool,
+    username: String,
+    email: String,
+    sign_in_count: u64,
+}
+
+fn build_user(email: String, username: String) -> User {
+    User { // 여기 Here!!
+        email,
+        username,
+        active: true,
+        sign_in_count: 1,
+    }
+}
+
+fn main() {
+    let user1 = build_user(
+        String::from("someone@example.com"),
+        String::from("someusername123"),
+    );
+}
+```
+
+위 코드에서 볼 수 있듯, (JS/TS 에서 봐왔듯) 같은 이름의 매개변수와 구조체 필드를 위와같이 축약하여 사용할 수 있다.
+
+## Structs Update 를 이용해, 다른 인스턴스로부터 새 인스턴스 생성
+
+말이야 어렵지만 결국, `기존에 있는 인스턴스의 값을 일부 차용해서 새 인스턴를 만들 수 있는가?` 이다. (그놈이 그놈인가?)
+
+아래와 같이 (JS/TS 의 Spread Operator 같이 생김) 만들 수 있다.
+
+```rust
+let user2 = User {
+        email: String::from("another@example.com"),
+        ..user1 // 여기 Here!!
+    };
+```
+
+어디서 많이 본 문법이다! 아마 JS/TS 였다면..
+
+```typescript
+let user2: User = {
+    ...user1,
+    email: "another@example.com",
+};
+```
+
+와 비슷하지 않았을까...?
+
+잠시 딴 길로 샜다. 위의 러스트 코드에서 주목할 점은
+`..user1` 이 중복된 필드 를 제외하고 명시적으로 맨 마지막에 선언되어야한다는 것이다.  
+따라서 아래 코드는 문제를 일으킨다.
+
+```rust
+
+let user2 = User {
+    ..user1,
+    email : String::from("test@Test.com")
+}
+
+```
+
+그리고 이 Structs Update 에는 매우 엄청난 제약이 있다.  
+이 연산은 `=` 과 같이 동작하므로 copy가 아닌 move 이고, 따라서 멤버변수가 모두 stack에 쌓이는 자료형의 데이터가 아니라면,
+user2가 생성된 이후 user1의 heap 에 만들어진 데이터들은 사용할 수 없게된다.  
+아래 코드를 보자
+
+```rust
+
+let  user1 = User {
+    email: String::from("someone@example.com"),
+    username: String::from("someusername123"),
+    active: true,
+    sign_in_count: 1,
+};
+
+let user2 = User {
+    email: String::from("test@example.com"),
+    ...user1
+}
+
+
+println!("{} {} {} {}", user1.name, user1.email, user1.age, user1.active);
+println!("{} {} {} {}", user2.name, user2.email, user2.age, user2.active);
+```
+
+위 코드는 다음과 컴파일 에러를 일으킨다.
+
+![structs-error](./readme/struct-error.png)
+
+이미 값은 move 되었으며, user1에서 빌리려고 한다는 것이다.  
+아래 note 를 보면 `user1.email이 String 타입이므로 move가 일어났다. 이것은 Copy 기능을 구현하지 않았다.` 라는 것을 알 수 있다.
+
+<br/>
+
+## 새로운 타입을 만들기 위해 명시적인 필드 없이 튜플 구조체 만들기
+
+백마디 말 보다 몇 라인 코드가 낫다.  
+튜플을 이용해서 다음과 같이 이름 붙인 필드 (Named fields) 없이 구조체를 생성해서 새로운 자료형으로 사용할 수 있다.
+
+```rust
+struct Color(i32, i32, i32);
+struct Point(i32, i32, i32);
+
+fn main() {
+    let black = Color(0, 0, 0);
+    let origin = Point(0, 0, 0);
+}
+```
+
+## 단위 유사 구조체(Unit-Like Structs)
+
+```rust
+struct AlwaysEqual;
+
+fn main() {
+    let subject = AlwaysEqual;
+}
+```
+
+이게 뭔가 싶다.  
+이 방식은 어떤 타입에 어떤 특성을 구현해야하지만, 그 타입에 어떤 데이터도 저장하고 싶지 않을 때 사용한다.  
+이 방식은 튜플의 `()` 와 유사하게 동작한다.
+
+또, 이해를 위해 튜플 구조체에서 내부 타입을 모두 없애고 () 만 남겨 생략했다고 생각해보는 것은 어떨까..
+
+```rust
+struct Color(i32, i32, i32);
+
+// -->
+
+struct Color()
+
+// -->
+
+struct Color
+
+```
+
+## 구조체의 오너쉽
+
+이 본문은 러스트의 공식 설명을 그대로 차용한다.
+
+다음과 같은 코드가 있다. 위의 예제에서 String 타입을 &str 로 치환했다.  
+이것은 모든 구조체가 각자 확실한 값을 가지기를 원하는 의도된 코드이다.
+
+```rust
+
+struct User {
+    active: bool,
+    username: &str,
+    email: &str,
+    sign_in_count: u64,
+}
+
+fn main() {
+    let user1 = User {
+        email: "someone@example.com",
+        username: "someusername123",
+        active: true,
+        sign_in_count: 1,
+    };
+}
+
+```
+
+하지만, 컴파일러 입장에서, lifetimes 파라미터를 사용해달라는 오류를 띄운다. 논지는 이것이다.  
+`lifetimes 는 "해당 구조체의 특정 데이터가 그 구조체의 수명이 끝날 때 까지 유효하다" 라는 것을 보증하기 때문` 이라고 한다.
+
+잘 보면, 구조체의 멤버변수로 레퍼런스(&) 를 사용한 것을 볼 수 있다.  
+따라서 구조체가 Dangling pointer 를 가지지 않게 하기 위함이라고 볼 수 있겠다.
