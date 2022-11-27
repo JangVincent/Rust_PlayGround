@@ -1144,3 +1144,115 @@ fn main() {
     height: 50,
 }
 ```
+
+## 구조체에 메서드 추가하기
+
+OOP 언어처럼 메서드를 추가할 수 있다. 아래 코드와 같이.
+
+```rust
+#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!(
+        "The area of the rectangle is {} square pixels.",
+        rect1.area()
+    );
+}
+```
+
+잘 보면 impl 이라는 키워드로 감싸여져 함수가 선언됨을 볼 수 있다.  
+impl 블록의 모든것은 Rectangle 타입(구조체) 와 연결된다.
+이때, &self 라는 것에 눈이 가게되는데,  
+이것을 통해 우리는 함수에 인스턴스를 파리미터로 넘기는 방법 대신, method syntax를 사용할 수 있다.
+
+> method syntax : 인스턴스 + . + method name(parameters) => rect1.area() 와 같은 형식
+
+&self 시그니처는 impl 블록이 존재하는 그 대상(여기서는 Rectangle) 을 가리키는 별칭인데,  
+&self 는 self : &Self 와 같다.  
+메소드들은 무조건 Self 타입의 self 라는 이름의 파라미터를 첫 인수로 가져야한다.  
+따라서 러스트는 이것을 축약하여 self 라는 것을 파라미터들의 맨 처음에 선언하는 것을 허락한다.
+
+하지만 우리가 아직 &을 사용하고 있음에 집중해야한다.  
+이것은 해당 메소드가 Self 인스턴스를 빌린다는 것이다.
+
+다른 함수들처럼 메소드는 self의 오너쉽을 가질수도 가/불변적으로 빌릴수도 있다.
+
+우리는 위의 예에서, 오너쉽을 가지지 않고, 값만 읽기 바라기에 &self 를 사용했다.
+메소드가 만약 값을 변경하고 싶었다면 우리는 &mut self 를 사용했어야 한다.
+
+메소드가 소유권을 가지기 위해 &self 대신 self 를 사용하는 경우는 드물며,  
+이 경우, self 를 다른것으로 변환하거나, 변환 후 기존 값을 사용하는 것을 방지하는 테크닉으로 사용된다.
+
+메소드 이름은 구조체의 필드명과 같은 것을 사용 가능하다.
+가끔 우리는 다른언어들의 getter 처럼, 필드명과 메소드 이름이 같은 것들이 값만 반환하길 원하지만,  
+러스트는 이것들을 자동으로 생성하지는 않는다.  
+이에 대한 public, private 등의 기능은 다음에 알아보자.
+
+### 생성자 메소드
+
+new 키워드처럼 정식으로 예약어가 존재하진 않지만, 관련 함수를 제공시킬 수 있다.
+
+```rust
+impl Rectangle {
+    fn square(width: u32, height : u32) -> Self { // 반환형이 Self 인 것에 집중
+        Self { // 여기도
+            width: width,
+            height: height,
+        }
+    }
+}
+```
+
+위의 코드에서 Self 로 타입을 생성 및 반환하는 것을 볼 수 있는데, 위에서 이야기 했듯, impl 블록이 존재한 그 구조체 를 가리키기 때문.
+
+### 다중 impl 블록
+
+각 구조체는 여러 impl 블록을 가질 수 있음. 아래 두 코드는 동치
+
+-   code 1
+
+```rust
+
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+}
+
+impl Rectangle {
+    fn can_hold(&self, other: &Rectangle) -> bool {
+        self.width > other.width && self.height > other.height
+    }
+}
+
+```
+
+-   code 2
+
+```rust
+
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+
+    fn can_hold(&self, other: &Rectangle) -> bool {
+        self.width > other.width && self.height > other.height
+    }
+}
+```
