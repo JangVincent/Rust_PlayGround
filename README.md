@@ -3,11 +3,18 @@
 This `README.md` based on Korean translated contents of [Official book site](https://doc.rust-lang.org/book/)
 
 
-# Install Rust on MacOS (Apple M1~)
+# Install/Uninstall Rust on MacOS (Apple M1~)
+
+## Install
 ```zsh
 curl https://sh.rustup.rs -sSf | sh -s -- --help
-```
+```  
 This command will install rust compiler and package manager (rustup)
+
+## Uninstall 
+```zsh
+rustup self uninstall
+```  
 
 # Variables in Rust
 
