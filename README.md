@@ -2,6 +2,13 @@
 
 This `README.md` based on Korean translated contents of [Official book site](https://doc.rust-lang.org/book/)
 
+
+# Install Rust on MacOS (Apple M1~)
+```zsh
+curl https://sh.rustup.rs -sSf | sh -s -- --help
+```
+This command will install rust compiler and package manager (rustup)
+
 # Variables in Rust
 
 `mut` 키워드는 변경 가능한 값을 의미한다.
