@@ -95,9 +95,16 @@ fn main() {
     for n in arr.iter() {
         println!("{}", n);
     }
+
+    let x = 3;
+    println!("{}", type_of(&x));
 }
 
 // funciton name should be snake case with small case for convention
 fn another_function(str: &str) -> usize {
     str.len()
+}
+
+fn type_of<T>(_: &T) -> &str {
+    std::any::type_name::<T>()
 }
