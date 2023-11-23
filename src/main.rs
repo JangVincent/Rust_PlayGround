@@ -132,6 +132,18 @@ fn main() {
     let a = 3;
     let b = a;
     println!("{}, {}", a, b); // OK
+
+    // Ownership with funciton
+    let sample_string = String::from("qweruiop");
+    let (sample_string, string_length) = calc_string(sample_string);
+    println!("{} {}", sample_string, string_length);
+
+    // 두 상황중 하나만 가능함
+    // 하나의 가변 참조자 (&mut)
+    // 여러개의 불변 참조자 (&)
+    let mut ss = String::from("hello");
+    let r2 = &ss;
+    let r1 = &mut ss;
 }
 
 // funciton name should be snake case with small case for convention
@@ -142,3 +154,19 @@ fn another_function(str: &str) -> usize {
 fn type_of<T>(_: &T) -> &str {
     std::any::type_name::<T>()
 }
+
+fn calc_string(s: String) -> (String, usize) {
+    // tuple 에 moved 된 값(heap 을 사용하는 값은 함수의 인수로 넘어가면 moved 됨.)을 사용해서 여러 원소에 넣으려고 하면,
+    // 이미 moved 된 값은 borrow 할 수 없다는 경고가 뜸
+    // ex) (s, s.len) // 튜플의 두번째 원소 부터는 s 를 직접 사용하려고 하거나 method 등으로 연산할 때 borrow 가 일어남.
+    // 이미 첫 원소에서 s 를 사용해버리면서 소유권이 tuple 로 moved 된다고 판단 하는 듯 하다.
+
+    let len = s.len();
+    (s, len)
+}
+
+// 댕글링 포인터이면 안됨
+// fn dangle() -> &String {
+//     let s = String::from("hello")
+//     s
+// }
