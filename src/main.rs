@@ -144,6 +144,33 @@ fn main() {
     let mut ss = String::from("hello");
     let r2 = &ss;
     let r1 = &mut ss;
+
+    // Slice
+    let mut test = String::from("Test is important");
+    let word = first_word_index(&test);
+    test.clear(); // 문자열을 빈 문자열로 만듦
+    println!("{}", word); // word 값은 변하지 않음 사실상 word 는 문자열과 상관 없는 값이 되버림.
+
+    let test2 = String::from("Test is important");
+    let slice1 = &test2[0..test2.len()]; // test2 의 일부 참조자. end 를 포함하지 않음
+    let slice2 = &test2[..2]; // start from 0
+    let total_slice = &test[..];
+
+    println!("{}", slice1);
+
+    // let mut t = String::from("Test is important");
+    // let word = first_word(&t); // immutable reference here.
+    // t.clear(); // Compile error : mutable reference here
+    // println!("{}", word);
+
+    // String literal is slice
+    let asdf = "Hello, world!";
+    // asdf type is &str(slice). it pointer specific binary position.
+    // 따라서 스트링 리터럴은 불변참조자임.
+
+    // slice can use with array
+    let a = [1, 2, 3, 4, 5];
+    let a_slice = &a[1..3]; // type : &[i32]
 }
 
 // funciton name should be snake case with small case for convention
@@ -170,3 +197,34 @@ fn calc_string(s: String) -> (String, usize) {
 //     let s = String::from("hello")
 //     s
 // }
+
+fn first_word_index(s: &String) -> usize {
+    let bytes = s.as_bytes();
+
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return i;
+        }
+    }
+
+    s.len()
+}
+
+fn first_word(s: &String) -> &str {
+    //using string slice
+    let bytes = s.as_bytes();
+
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &s[0..i];
+        }
+    }
+
+    &s[..]
+}
+
+// 이렇게 함수를 만들면 String 형에 대한 전체 slice 와 &str 모두 전달 가능.
+fn refactor_first_word(s: &str) -> &str {
+    // todo something
+    "asdf"
+}
